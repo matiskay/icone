@@ -7,9 +7,9 @@
 
 ## Instalation
 
-1.- `virtualenv --site-no-packages env`
-2.- `source /env/bin/activate`
-3.- `pip install scrapy`
+1. `virtualenv --site-no-packages env`
+2. `source /env/bin/activate`
+3. `pip install scrapy`
 
 ## References
 
