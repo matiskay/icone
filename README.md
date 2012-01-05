@@ -3,7 +3,10 @@
 ## TODO
 - Pagination
 - Scrape two other urls 
+
+## DONE
 - Clean up the strings
+- Clean description: Now it is a list [, , , ]
 
 ## Instalation
 
