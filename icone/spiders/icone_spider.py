@@ -11,14 +11,15 @@ from icone.items import Product
 
 # Generate a string form a list trimming the values
 def clear(l):
-  r_list = []
-  for x in l:
-    pattern = re.compile(r'\s+')
-    x = re.sub(pattern, ' ', x)
-    x = x.strip()
-    r_list.append(x)
+    r_list = []
+    for x in l:
+        pattern = re.compile(r'\s+')
+        x = re.sub(pattern, ' ', x)
+        x = x.strip()
+        r_list.append(x)
 
-  return ' '.join(r_list)
+    return ' '.join(r_list)
+
 
 class IconeSpider(CrawlSpider):
 
@@ -45,12 +46,12 @@ class IconeSpider(CrawlSpider):
     
         for product in products:
 
-          item = Product()
-          item['name'] = clear(product.select('./tr/td[@class="itemlist_design"]/strong/text()').extract())
-          item['description'] = clear(product.select('./tr/td[@class="itemlist_desc"]/text()').extract())
-          item['price'] = clear(product.select('./tr/td[@class="itemlist_price"]/a/span/strong/text()').extract()) 
-          item['image'] = clear(product.select('./tr/td[@class="itemlist_img"]/a/img/@src').extract())
+            item = Product()
+            item['name'] = clear(product.select('./tr/td[@class="itemlist_design"]/strong/text()').extract())
+            item['description'] = clear(product.select('./tr/td[@class="itemlist_desc"]/text()').extract())
+            item['price'] = clear(product.select('./tr/td[@class="itemlist_price"]/a/span/strong/text()').extract()) 
+            item['image'] = clear(product.select('./tr/td[@class="itemlist_img"]/a/img/@src').extract())
 
-          items.append(item)
+            items.append(item)
 
         return items
