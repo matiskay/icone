@@ -10,7 +10,7 @@ from icone.items import Product
 
 
 # Generate a string form a list trimming the values
-def clear(l):
+def clean(l):
     r_list = []
     for x in l:
         pattern = re.compile(r'\s+')
@@ -88,10 +88,10 @@ class IconeSpider(BaseSpider):
         for product in products:
 
             item = Product()
-            item['name'] = clear(product.select('./tr/td[@class="itemlist_design"]/strong/text()').extract())
-            item['description'] = clear(product.select('./tr/td[@class="itemlist_desc"]/text()').extract())
-            item['price'] = clear(product.select('./tr/td[@class="itemlist_price"]/a/span/strong/text()').extract()) 
-            item['image'] = clear(product.select('./tr/td[@class="itemlist_img"]/a/img/@src').extract())
+            item['name'] = clean(product.select('./tr/td[@class="itemlist_design"]/strong/text()').extract())
+            item['description'] = clean(product.select('./tr/td[@class="itemlist_desc"]/text()').extract())
+            item['price'] = clean(product.select('./tr/td[@class="itemlist_price"]/a/span/strong/text()').extract())
+            item['image'] = clean(product.select('./tr/td[@class="itemlist_img"]/a/img/@src').extract())
 
             items.append(item)
 
