@@ -24,16 +24,20 @@ def clean(l):
 # Generate a slug string
 # This is not a real implemention of slug but it works in this case
 def slug(s):
-  slug = s.replace(' ', '-')
-  return slug
+    slug = s.replace(' ', '-')
+    return slug
 
 
 # Remove the last element of a url
 # TODO: Refactor this code
+# TODO: Use regular expressions
 def remove_last(url):
     url = urlparse(url)
 
-    path = '/'.join(url.path.split('/')[1:len(url.path.split('/')) - 2 ])
+    n_elements = len(url.path.split('/'))
+
+    # Remove the last element of the path
+    path = '/'.join(url.path.split('/')[1:n_elements - 2])
 
     url = 'http://%s/%s/' % (url.netloc, path)
 
@@ -58,10 +62,10 @@ class IconeSpider(BaseSpider):
         product_types = hxs.select('//select[@name="prod_type"]/option/text()').extract()[1:] 
 
         for product_type in product_types:
-          product_type = slug(product_type)
-          # TODO: There is a problem adding 0
-          url = "%s/designer-living/product-type/%s/0/" % (response.url, product_type)
-          yield Request(url=url, callback=self.parse_pages)
+            product_type = slug(product_type)
+            # TODO: There is a problem adding 0
+            url = "%s/designer-living/product-type/%s/0/" % (response.url, product_type)
+            yield Request(url=url, callback=self.parse_pages)
 
 
     def parse_pages(self, response):
