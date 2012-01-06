@@ -5,9 +5,11 @@ This spider only get the information from the pagination.
 It doesn't get the information from the product detail.
 
 Just type
+
 ```bash
   $ scrapy crawl icone -o items.json -t json
 ```
+
 Then check the items.json file. 
 
 ## TODO
