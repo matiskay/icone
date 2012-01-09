@@ -1,8 +1,13 @@
 # A spider for Icone 
 
 This spider loop though all the items using the filters to get the products.
-This spider only get the information from the pagination. 
-It doesn't get the information from the product detail.
+This spider only get the information from the pagination and then explores the product
+detail and the information.
+
+- name
+- price
+- description
+- images
 
 Just type
 
