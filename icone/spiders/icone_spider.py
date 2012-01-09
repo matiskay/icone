@@ -87,9 +87,9 @@ class IconeSpider(BaseSpider):
 
         item = Product()
 
-        item['name'] = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()').extract() 
+        item['name'] = clean(hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()').extract()) 
 
-        item['description'] = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/div[@class="content"][2]/text()').extract()  
+        item['description'] = clean(hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/div[@class="content"][2]/text()').extract())
 
         price = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/table/tr[4]/td[2]/strong/text()').extract()
 
@@ -106,7 +106,7 @@ class IconeSpider(BaseSpider):
                             if not price:
                                 price = hxs.select('//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[4]/td[2]/strong/text()').extract()
 
-        item['price'] = price
+        item['price'] = clean(price)
 
         item['image'] = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr/td/strong/a/@href').re(r"\('(.*?)'\)")   
 
