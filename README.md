@@ -52,4 +52,4 @@ Then check the items.json file.
 - [Scrapy Tutorial](http://readthedocs.org/docs/scrapy/en/0.14/intro/tutorial.html)
 - [Scrapy - Requests and Responses](http://readthedocs.org/docs/scrapy/en/0.14/topics/request-response.html)
 - [Scrapy - Spiders](http://readthedocs.org/docs/scrapy/en/latest/topics/spiders.html)
-- [Ideas is from BManojlovic](http://pastie.org/3133918)
+- [Ideas from BManojlovic](http://pastie.org/3133918)
