@@ -59,13 +59,10 @@ class IconeSpider(BaseSpider):
         hxs = HtmlXPathSelector(response)
 
         # TODO: Refactor this code. Many websites only has pagination for some pages. [1][2][3]....[90][91]
-        pages = hxs.select('//table/tr/td/table/tr[3]/td/table/tr[2]/td/form/table/tr[3]/td/table/tr/td/b/text()').extract()
+        pages = hxs.select('//table/tr/td/table/tr[3]/td/table/tr[2]/td/form/table/tr[3]/td/table/tr/td/b/text()').re(r'\[Page \d+ of (\d+)\]')
 
         if pages:
-            p = re.compile('\[Page \d+ of (\d+)\]')
-            m = p.match(pages[0])
-            pages = m.group(1)
-            pages = int(pages)
+            pages = int(pages[0])
         else:
             pages = 1
 
