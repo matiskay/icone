@@ -1,5 +1,4 @@
 import re
-from urlparse import urlparse
 
 from scrapy.spider import BaseSpider
 from scrapy.contrib.spiders import CrawlSpider, Rule
@@ -28,19 +27,10 @@ def slug(s):
     return slug
 
 
-# Remove the last element of a url
-# TODO: Refactor this code
-# TODO: Use regular expressions
+# Remove the last element of a url /(\d+)/
 def remove_last(url):
-    url = urlparse(url)
 
-    n_elements = len(url.path.split('/'))
-
-    # Remove the last element of the path
-    path = '/'.join(url.path.split('/')[1:n_elements - 2])
-
-    url = 'http://%s/%s/' % (url.netloc, path)
-
+    url = re.sub('\d+\/$', '', url)
     return url
 
 
