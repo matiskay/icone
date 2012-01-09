@@ -93,22 +93,18 @@ class IconeSpider(BaseSpider):
 
         price = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/table/tr[4]/td[2]/strong/text()').extract()
 
-        if price:
-            item['price'] = price
-        else:
+        if not price:
             price = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/table/tr[3]/td[2]/strong/text()').extract()
-            if price:
-                item['price'] = price
-            else:
+            if not price:
                 price = hxs.select('//td[@class="midcol"]/form/table/tr[4]/td[2]/strong/text()').extract()
-                if price:
-                    item['price'] = price
-                else:
+                if not price:
                     price = hxs.select('//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[3]/td[2]/strong/text()').extract()
-                    if price:
-                        item['price'] = price
-                    else:
-                        item['price'] = hxs.select('//td[@class="midcol"]/form/table/tr[2]/td[2]/strong/text()').extract()
+                    if not price:
+                        price = hxs.select('//td[@class="midcol"]/form/table/tr[2]/td[2]/strong/text()').extract()
+                        if not price:
+                            price = hxs.select('//td[@class="midcol"]/form/table/tr[5]/td[2]/strong/text()').extract()
+                            if not price:
+                                price = hxs.select('//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[4]/td[2]/strong/text()').extract()
 
         item['price'] = price
 
