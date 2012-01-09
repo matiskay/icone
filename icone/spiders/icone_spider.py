@@ -30,7 +30,7 @@ def slug(s):
 # Remove the last element of a url /(\d+)/
 def remove_last(url):
 
-    url = re.sub('\d+\/$', '', url)
+    url = re.sub(r'\d+\/$', '', url)
     return url
 
 
