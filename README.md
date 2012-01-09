@@ -9,16 +9,16 @@ detail and the information.
 - description
 - images
 
-In order to get the results. Just type
+In order to get the results. Just run 
 
 ```bash
-  $ scrapy crawl icone -o items.json -t json
+  scrapy crawl icone -o items.json -t json
 ```
 
 or 
 
 ```bash
-  $ make
+  make
 ```
 
 inside the `icone` folder
@@ -48,14 +48,14 @@ Then check the items.json file.
 - Check the list of spiders
 
 ```bash
-  $ scrapy list
+  scrapy list
 ```
 
 
 - Save the scraped data into a json file
 
 ```bash
-  $ scrapy crawl icone -o items.json -t json
+  scrapy crawl icone -o items.json -t json
 ```
 
 
