@@ -9,11 +9,19 @@ detail and the information.
 - description
 - images
 
-Just type
+In order to get the results. Just type
 
 ```bash
   $ scrapy crawl icone -o items.json -t json
 ```
+
+or 
+
+```bash
+  $ make
+```
+
+inside the `icone` folder
 
 Then check the items.json file. 
 
