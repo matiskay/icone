@@ -8,10 +8,10 @@ from scrapy.http import Request
 from icone.items import Product 
 
 
-# Generate a string form a list trimming the values
-def clean(l):
+# Generate a string from a list of trimming the values
+def clean(i_list):
     r_list = []
-    for x in l:
+    for x in i_list:
         pattern = re.compile(r'\s+')
         x = re.sub(pattern, ' ', x)
         x = x.strip()
@@ -38,11 +38,7 @@ class IconeSpider(BaseSpider):
 
     name = 'icone'
     allowed_domains = ['icone.co.uk']
-    start_urls = ['http://www.icone.co.uk',
-#        'http://www.icone.co.uk/designer-living/product-type/',
-#        'http://www.icone.co.uk/designer-living/brand/',
-#        'http://www.icone.co.uk/designer-living/designer/',
-    ]
+    start_urls = ['http://www.icone.co.uk']
 
 
     def parse(self, response):
