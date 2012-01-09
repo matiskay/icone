@@ -75,17 +75,43 @@ class IconeSpider(BaseSpider):
     def parse_products(self, response):
         hxs = HtmlXPathSelector(response)
         
-        products = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr[2]/td/table')
+        products = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr[2]/td/table/tr')
         items = []
-    
         for product in products:
+            url = product.select('./td[@class="itemlist_design"]/a/@href').extract()
+            yield Request(url=url[0], callback=self.parse_product)
 
-            item = Product()
-            item['name'] = clean(product.select('./tr/td[@class="itemlist_design"]/strong/text()').extract())
-            item['description'] = clean(product.select('./tr/td[@class="itemlist_desc"]/text()').extract())
-            item['price'] = clean(product.select('./tr/td[@class="itemlist_price"]/a/span/strong/text()').extract())
-            item['image'] = clean(product.select('./tr/td[@class="itemlist_img"]/a/img/@src').extract())
 
-            items.append(item)
+    def parse_product(self, response):
+        hxs = HtmlXPathSelector(response)
 
-        return items
+        item = Product()
+
+        item['name'] = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()').extract() 
+
+        item['description'] = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/div[@class="content"][2]/text()').extract()  
+
+        price = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/table/tr[4]/td[2]/strong/text()').extract()
+
+        if price:
+            item['price'] = price
+        else:
+            price = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/table/tr[3]/td[2]/strong/text()').extract()
+            if price:
+                item['price'] = price
+            else:
+                price = hxs.select('//td[@class="midcol"]/form/table/tr[4]/td[2]/strong/text()').extract()
+                if price:
+                    item['price'] = price
+                else:
+                    price = hxs.select('//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[3]/td[2]/strong/text()').extract()
+                    if price:
+                        item['price'] = price
+                    else:
+                        item['price'] = hxs.select('//td[@class="midcol"]/form/table/tr[2]/td[2]/strong/text()').extract()
+
+        item['price'] = price
+
+        item['image'] = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr/td/strong/a/@href').re(r"\('(.*?)'\)")   
+
+        return item
