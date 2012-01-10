@@ -7,39 +7,51 @@ from scrapy.http import Request
 from icone.items import Product
 
 
-# Generate a string from a list of trimming the values
 def clean(i_list):
+    """
+    Generate a string from a list of triming values
+    """
     r_list = []
-    for x in i_list:
+    for string in i_list:
         pattern = re.compile(r'\s+')
-        x = re.sub(pattern, ' ', x)
-        x = x.strip()
-        r_list.append(x)
+        string = re.sub(pattern, ' ', string)
+        string = string.strip()
+        r_list.append(string)
 
     return ' '.join(r_list)
 
 
-# Generate a slug string
-# This is not a real implemention of slug but it works in this case
-def slug(s):
-    slug = s.replace(' ', '-')
-    return slug
+def slug(string):
+    """
+    Generate a slug string
+    This is not a real implementation of sluglify but this works in this
+    particular case
+
+    """
+    slugify = string.replace(' ', '-')
+    return slugify
 
 
-# Remove the last element of a url /(\d+)/
 def remove_last(url):
+    """
+    Remove the last element of a url /(\d+)/
+    """
 
     url = re.sub(r'\d+\/$', '', url)
     return url
 
 
 class IconeSpider(BaseSpider):
+    """
+    """
 
     name = 'icone'
     allowed_domains = ['icone.co.uk']
     start_urls = ['http://www.icone.co.uk']
 
     def parse(self, response):
+        """
+        """
         hxs = HtmlXPathSelector(response)
 
         # Remove the first element becuase it doesn't provide any item
@@ -56,7 +68,8 @@ class IconeSpider(BaseSpider):
             yield Request(url=url, callback=self.parse_pages)
 
     def parse_pages(self, response):
-
+        """
+        """
         hxs = HtmlXPathSelector(response)
 
         # TODO: Refactor this code. Many websites only has pagination for
@@ -79,18 +92,21 @@ class IconeSpider(BaseSpider):
                 dont_filter=True)
 
     def parse_products(self, response):
+        """
+        """
         hxs = HtmlXPathSelector(response)
 
         products = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td/form/ \
             table/tr[2]/td/table/tr')
 
-        items = []
         for product in products:
             url = product.select('./td[@class="itemlist_design"]/a/@href') \
                 .extract()
             yield Request(url=url[0], callback=self.parse_product)
 
     def parse_product(self, response):
+        """
+        """
         hxs = HtmlXPathSelector(response)
 
         item = Product()
