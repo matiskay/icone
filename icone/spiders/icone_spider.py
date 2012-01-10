@@ -38,6 +38,7 @@ class IconeSpider(BaseSpider):
 
     def parse(self, response):
         """
+        Parse and sluglify the options values from a combo box
         """
         hxs = HtmlXPathSelector(response)
 
@@ -56,6 +57,7 @@ class IconeSpider(BaseSpider):
 
     def parse_pages(self, response):
         """
+        Parse the page product types to get the links from the pagination
         """
         hxs = HtmlXPathSelector(response)
 
@@ -80,6 +82,7 @@ class IconeSpider(BaseSpider):
 
     def parse_products(self, response):
         """
+        Parse each product to get the url from the product.
         """
         hxs = HtmlXPathSelector(response)
 
@@ -93,6 +96,13 @@ class IconeSpider(BaseSpider):
 
     def parse_product(self, response):
         """
+        Gather all the information from the product
+
+        name
+        price
+        description
+        image_urls
+
         """
         l = XPathItemLoader(item=Product(), response=response)
         l.add_xpath('name', '//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()')
