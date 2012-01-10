@@ -9,14 +9,9 @@ from icone.items import Product
 
 def clean(i_list):
     """
-    Generate a string from a list of triming values
+    Generate a string from a list stripped all the extra whitespace
     """
-    r_list = []
-    for string in i_list:
-        pattern = re.compile(r'\s+')
-        string = re.sub(pattern, ' ', string)
-        string = string.strip()
-        r_list.append(string)
+    r_list = [string.strip() for string in i_list]
 
     return ' '.join(r_list)
 
