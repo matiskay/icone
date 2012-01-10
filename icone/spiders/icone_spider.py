@@ -3,17 +3,9 @@ import re
 from scrapy.spider import BaseSpider
 from scrapy.selector import HtmlXPathSelector
 from scrapy.http import Request
+from scrapy.contrib.loader import XPathItemLoader
 
 from icone.items import Product
-
-
-def clean(i_list):
-    """
-    Generate a string from a list stripped all the extra whitespace
-    """
-    r_list = [string.strip() for string in i_list]
-
-    return ' '.join(r_list)
 
 
 def slug(string):
@@ -102,63 +94,17 @@ class IconeSpider(BaseSpider):
     def parse_product(self, response):
         """
         """
-        hxs = HtmlXPathSelector(response)
+        l = XPathItemLoader(item=Product(), response=response)
+        l.add_xpath('name', '//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()')
+        l.add_xpath('description', '//table/tr/td/table/tr[3]/td/table/tr/td[2]/div[@class="content"][2]/text()')
 
-        item = Product()
+        l.add_xpath('price', '//td[@class="midcol"]/form/table/tr[2]/td[2]/strong/text()')
+        l.add_xpath('price', '//td[@class="midcol"]/form/table/tr[3]/td[2]/strong/text()')
+        l.add_xpath('price', '//td[@class="midcol"]/form/table/tr[4]/td[2]/strong/text()')
+        l.add_xpath('price', '//td[@class="midcol"]/form/table/tr[5]/td[2]/strong/text()')
+        l.add_xpath('price', '//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[3]/td[2]/strong/text()')
+        l.add_xpath('price', '//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[4]/td[2]/strong/text()')
 
-        item['name'] = clean(hxs.select(
-            '//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()') \
-            .extract()
-            )
+        l.add_xpath('image', '//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr/td/strong/a/@href', re="'(.*?)'")
 
-        item['description'] = clean(hxs.select(
-            '//table/tr/td/table/tr[3]/td/table/tr/td[2]/ \
-            div[@class="content"][2]/text()') \
-            .extract()
-            )
-
-        price = hxs.select(
-            '//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/ \
-            table/tr[4]/td[2]/strong/text()') \
-            .extract()
-
-        if not price:
-            price = hxs.select(
-                '//table/tr/td/table/tr[3]/td/table/tr/td[2]/form/ \
-                table/tr[3]/td[2]/strong/text()') \
-                .extract()
-            if not price:
-                price = hxs.select(
-                    '//td[@class="midcol"]/form/table/tr[4]/td[2]/ \
-                    strong/text()') \
-                    .extract()
-                if not price:
-                    price = hxs.select(
-                        '//td[@class="midcol"]/div[@class="content"][3]/form/ \
-                        table/tr[3]/td[2]/strong/text()') \
-                        .extract()
-                    if not price:
-                        price = hxs.select(
-                            '//td[@class="midcol"]/form/table/tr[2]/td[2]/ \
-                            strong/text()') \
-                            .extract()
-                        if not price:
-                            price = hxs.select(
-                                '//td[@class="midcol"]/form/table/ \
-                                tr[5]/td[2]/strong/text()') \
-                                .extract()
-                            if not price:
-                                price = hxs.select(
-                                    '//td[@class="midcol"]/ \
-                                    div[@class="content"][3]/form/ \
-                                    table/tr[4]/td[2]/strong/text()') \
-                                    .extract()
-
-        item['price'] = clean(price)
-
-        item['image'] = hxs.select(
-            '//table/tr/td/table/tr[3]/td/table/tr/td/form/table/ \
-            tr/td/strong/a/@href') \
-            .re(r"\('(.*?)'\)")
-
-        return item
+        return l.load_item()

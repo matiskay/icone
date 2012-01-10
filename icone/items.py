@@ -4,11 +4,23 @@
 # http://doc.scrapy.org/topics/items.html
 
 from scrapy.item import Item, Field
+from scrapy.contrib.loader.processor import MapCompose, Join, TakeFirst
+
 
 class Product(Item):
-    name = Field()
-    description = Field()
-    price = Field()
+    name = Field(
+        input_processor=MapCompose(unicode.strip),
+        output_processor=Join(),
+        )
+    description = Field(
+        input_processor=MapCompose(unicode.strip),
+        output_processor=Join(),
+    )
+
+    price = Field(
+        input_processor=MapCompose(unicode.strip),
+        output_processor=Join(),
+    )
     image = Field()
 
     def __str__(self):
