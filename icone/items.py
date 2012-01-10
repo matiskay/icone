@@ -12,6 +12,7 @@ class Product(Item):
         input_processor=MapCompose(unicode.strip),
         output_processor=Join(),
         )
+
     description = Field(
         input_processor=MapCompose(unicode.strip),
         output_processor=Join(),
@@ -21,7 +22,9 @@ class Product(Item):
         input_processor=MapCompose(unicode.strip),
         output_processor=Join(),
     )
-    image = Field()
+
+    image_urls = Field()
+    images = Field()
 
     def __str__(self):
         return "Product: name=%s price=%s" % (self['name'], self['price'])

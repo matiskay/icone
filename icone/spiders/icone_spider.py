@@ -105,6 +105,6 @@ class IconeSpider(BaseSpider):
         l.add_xpath('price', '//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[3]/td[2]/strong/text()')
         l.add_xpath('price', '//td[@class="midcol"]/div[@class="content"][3]/form/table/tr[4]/td[2]/strong/text()')
 
-        l.add_xpath('image', '//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr/td/strong/a/@href', re="'(.*?)'")
+        l.add_xpath('image_urls', '//table/tr/td/table/tr[3]/td/table/tr/td/form/table/tr/td/strong/a/@href', re="'(.*?)'")
 
         return l.load_item()
