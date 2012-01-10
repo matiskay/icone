@@ -4,7 +4,7 @@
 # http://doc.scrapy.org/topics/items.html
 
 from scrapy.item import Item, Field
-from scrapy.contrib.loader.processor import MapCompose, Join, TakeFirst
+from scrapy.contrib.loader.processor import MapCompose, Join
 
 
 class Product(Item):
