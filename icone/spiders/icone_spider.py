@@ -8,15 +8,6 @@ from scrapy.contrib.loader import XPathItemLoader
 from icone.items import Product
 
 
-def clean(i_list):
-    """
-    Generate a string from a list stripped all the extra whitespace
-    """
-    r_list = [string.strip() for string in i_list]
-
-    return ' '.join(r_list)
-
-
 def slug(string):
     """
     Generate a slug string
