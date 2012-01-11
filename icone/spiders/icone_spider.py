@@ -7,6 +7,36 @@ from scrapy.contrib.loader import XPathItemLoader
 
 from icone.items import Product
 
+XPATHS = {
+    # Get the product_types from the combo box
+    'product_types' : '//select[@name="prod_type"]/option/text()',
+    'pages' : '//table/tr/td/table/tr[3]/td/table/tr[2]/td/form/table/ \
+        tr[3]/td/table/tr/td/b/text()',
+    'products' : {
+        'base' : '//table/tr/td/table/tr[3]/td/table/tr/td/form/ \
+            table/tr[2]/td/table/tr', 
+        'url' : './td[@class="itemlist_design"]/a/@href'
+        },
+    'product' : { 
+        'name' : '//table/tr/td/table/tr[3]/td/table/tr/td[2]/h1/text()',
+        'description' : '//table/tr/td/table/tr[3]/td/table/ \
+            tr/td[2]/div[@class="content"][2]/text()',
+        'prices' : [
+            '//td[@class="midcol"]/form/table/tr[2]/td[2]/strong/text()',
+            '//td[@class="midcol"]/form/table/tr[3]/td[2]/strong/text()',
+            '//td[@class="midcol"]/form/table/tr[4]/td[2]/strong/text()',
+            '//td[@class="midcol"]/form/table/tr[5]/td[2]/strong/text()',
+            '//td[@class="midcol"]/div[@class="content"][3]/form/table/ \
+                tr[3]/td[2]/strong/text()',
+            '//td[@class="midcol"]/div[@class="content"][3]/form/table/ \
+                tr[4]/td[2]/strong/text()',
+        ],
+        # Get the images form the image pagination above the image
+        'image_urls' : '//table/tr/td/table/tr[3]/td/table/tr/td/form/table/ \
+            tr/td/strong/a/@href'
+    }
+
+}
 
 def slug(string):
     """
@@ -43,13 +73,10 @@ class IconeSpider(BaseSpider):
         hxs = HtmlXPathSelector(response)
 
         # Remove the first element becuase it doesn't provide any item
-        product_types = hxs.select(
-            '//select[@name="prod_type"]/option/text()') \
-            .extract()[1:]
+        product_types = hxs.select(XPATHS['product_types']).extract()[1:]
 
         for product_type in product_types:
             product_type = slug(product_type)
-            # TODO: There is a problem adding 0
             url = "%s/designer-living/product-type/%s/0/" %  \
                 (response.url, product_type)
 
@@ -61,12 +88,7 @@ class IconeSpider(BaseSpider):
         """
         hxs = HtmlXPathSelector(response)
 
-        # TODO: Refactor this code. Many websites only has pagination for
-        # some pages. [1][2][3]....[90][91]
-        pages = hxs.select(
-            '//table/tr/td/table/tr[3]/td/table/tr[2]/td/form/table/tr[3]/td/ \
-            table/tr/td/b/text()') \
-            .re(r'\[Page \d+ of (\d+)\]')
+        pages = hxs.select(XPATHS['pages']).re(r'\[Page \d+ of (\d+)\]')
 
         if pages:
             pages = int(pages[0])
@@ -86,12 +108,10 @@ class IconeSpider(BaseSpider):
         """
         hxs = HtmlXPathSelector(response)
 
-        products = hxs.select('//table/tr/td/table/tr[3]/td/table/tr/td/form/ \
-            table/tr[2]/td/table/tr')
+        products = hxs.select(XPATHS['products']['base'])
 
         for product in products:
-            url = product.select('./td[@class="itemlist_design"]/a/@href') \
-                .extract()
+            url = product.select(XPATHS['products']['url']).extract()
             yield Request(url=url[0], callback=self.parse_product)
 
     def parse_product(self, response):
@@ -106,30 +126,15 @@ class IconeSpider(BaseSpider):
         """
         l = XPathItemLoader(item=Product(), response=response)
 
-        l.add_xpath('name', '//table/tr/td/table/tr[3]/td/table/ \
-            tr/td[2]/h1/text()')
+        l.add_xpath('name', XPATHS['product']['name'])
 
-        l.add_xpath('description', '//table/tr/td/table/tr[3]/td/table/ \
-            tr/td[2]/div[@class="content"][2]/text()')
+        l.add_xpath('description', XPATHS['product']['description'])
 
         # price
-        l.add_xpath('price', '//td[@class="midcol"]/form/table/ \
-            tr[2]/td[2]/strong/text()')
+        for xpath in XPATHS['product']['prices']:
+            l.add_xpath('price', xpath)
 
-        l.add_xpath('price', '//td[@class="midcol"]/form/table/ \
-            tr[3]/td[2]/strong/text()')
-        l.add_xpath('price', '//td[@class="midcol"]/form/table/ \
-            tr[4]/td[2]/strong/text()')
-        l.add_xpath('price', '//td[@class="midcol"]/form/table/ \
-            tr[5]/td[2]/strong/text()')
-        l.add_xpath('price', '//td[@class="midcol"]/ \
-            div[@class="content"][3]/form/table/tr[3]/td[2]/strong/text()')
-        l.add_xpath('price', '//td[@class="midcol"]/ \
-            div[@class="content"][3]/form/table/tr[4]/td[2]/strong/text()')
-
-        l.add_xpath('image_urls', '//table/tr/td/table/ \
-            tr[3]/td/table/tr/td/form/table/tr/td/strong/a/@href'
-            , re="'(.*?)'"
-        )
+        l.add_xpath('image_urls', XPATHS['product']['image_urls'] \
+            , re="'(.*?)'")
 
         return l.load_item()
