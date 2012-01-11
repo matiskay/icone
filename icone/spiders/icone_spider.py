@@ -39,37 +39,38 @@ XPATHS = {
 }
 
 def slug(string):
-    """
+    '''
     Generate a slug string
     This is not a real implementation of sluglify but this works in this
     particular case
 
-    """
+    '''
     slugify = string.replace(' ', '-')
     return slugify
 
 
 def remove_last(url):
-    """
+    '''
     Remove the last element of a url /(\d+)/
-    """
+    '''
 
     url = re.sub(r'\d+\/$', '', url)
     return url
 
 
 class IconeSpider(BaseSpider):
-    """
-    """
+    '''
+    A custom spider for http://www.icone.co.uk/
+    '''
 
     name = 'icone'
     allowed_domains = ['icone.co.uk']
     start_urls = ['http://www.icone.co.uk']
 
     def parse(self, response):
-        """
+        '''
         Parse and sluglify the options values from a combo box
-        """
+        '''
         hxs = HtmlXPathSelector(response)
 
         # Remove the first element becuase it doesn't provide any item
@@ -77,15 +78,15 @@ class IconeSpider(BaseSpider):
 
         for product_type in product_types:
             product_type = slug(product_type)
-            url = "%s/designer-living/product-type/%s/0/" %  \
-                (response.url, product_type)
+            url = '%s/designer-living/product-type/%s/0/' \
+                % (response.url, product_type)
 
             yield Request(url=url, callback=self.parse_pages)
 
     def parse_pages(self, response):
-        """
+        '''
         Parse the page product types to get the links from the pagination
-        """
+        '''
         hxs = HtmlXPathSelector(response)
 
         pages = hxs.select(XPATHS['pages']).re(r'\[Page \d+ of (\d+)\]')
@@ -96,16 +97,16 @@ class IconeSpider(BaseSpider):
             pages = 1
 
         for number in range(0, pages):
-            url = "%s%s/" % (remove_last(response.url), number)
+            url = '%s%s/' % (remove_last(response.url), number)
             # dont_filter=True beacuse the spider doesn't read the first
             # request /0/
             yield Request(url=url, callback=self.parse_products,
                 dont_filter=True)
 
     def parse_products(self, response):
-        """
+        '''
         Parse each product to get the url from the product.
-        """
+        '''
         hxs = HtmlXPathSelector(response)
 
         products = hxs.select(XPATHS['products']['base'])
@@ -115,7 +116,7 @@ class IconeSpider(BaseSpider):
             yield Request(url=url[0], callback=self.parse_product)
 
     def parse_product(self, response):
-        """
+        '''
         Gather all the information from the product
 
         name
@@ -123,7 +124,7 @@ class IconeSpider(BaseSpider):
         description
         image_urls
 
-        """
+        '''
         l = XPathItemLoader(item=Product(), response=response)
 
         l.add_xpath('name', XPATHS['product']['name'])
@@ -135,6 +136,6 @@ class IconeSpider(BaseSpider):
             l.add_xpath('price', xpath)
 
         l.add_xpath('image_urls', XPATHS['product']['image_urls'] \
-            , re="'(.*?)'")
+            , re='\'(.*?)\'')
 
         return l.load_item()
